@@ -1,0 +1,5 @@
+This project is to list all local ip addresses of a linux/unix machine, except 127.0.0.1/8 net.
+
+This code is usefull when combined with other tools.
+
+
