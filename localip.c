@@ -10,8 +10,59 @@
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
 
+typedef struct listNode {
+    struct listNode *next;
+    void *value;
+} listNode;
+
+typedef struct list {
+    listNode *head;
+    listNode *tail;
+    unsigned int len;
+} list;
+
+list *listCreate(void)
+{
+    struct list *list;
+
+    if ((list = malloc(sizeof(*list))) == NULL)
+        return NULL;
+    list->head = list->tail = NULL;
+    list->len = 0;
+    return list;
+}
+
+list *listAddNodeTail(list *list, void *value)
+{
+    listNode *node;
+
+    if ((node = malloc(sizeof(*node))) == NULL)
+        return NULL;
+    node->value = value;
+    if (list->len == 0) {
+        list->head = list->tail = node;
+    } else {
+        list->tail->next = node;
+        list->tail = node;
+    }
+    list->len++;
+    return list;
+}
+
+void showList(list *list)
+{
+	listNode *node;
+	node = list->head;
+	int i;
+	for(i=0;i<list->len;i++)
+	{
+		printf("%d th value is %s\n", i, node->value);
+		node=node->next;
+	}
+}
+
 int
-getlocalip (char **outip)
+getlocalip (list *list)
 {
   int i = 0;
   int sockfd;
@@ -32,15 +83,6 @@ getlocalip (char **outip)
 
 
   int if_num = (ifconf.ifc_len / sizeof (struct ifreq));
-  int j;
-  char *temp_ip;
-  for (j=0;j<if_num;j++)
-  {
-    temp_ip=(char *)malloc(20 * sizeof(char));
-    outip[j]=temp_ip;
-//    printf("%dth outip is %ld\n", j, outip[j]);
-  }
-  printf("the number of Interface is %d\n", j);
 
 
 //  for (i = (ifconf.ifc_len / sizeof (struct ifreq)); i > 0; i--)
@@ -56,7 +98,8 @@ getlocalip (char **outip)
 	}
 */
 //      printf("ifreq is %ld, size is %d\n", ifreq, sizeof(ifreq));
-      strcpy (outip[i], ip);
+	
+    list = listAddNodeTail(list, ip);
 	  ifreq++;
       continue;
 //      return 0;
@@ -64,24 +107,33 @@ getlocalip (char **outip)
 
 //  return -1;
 //return the number of ip addresses
+  printf("the number of Interface is %d\n", i);
   return i;
 }
 
 int
 main ()
 {
-  int max_if_num = 20;
-  char *ip[max_if_num];
 
-  int i = getlocalip (ip);
+    struct list *list;
+	
+    list = listCreate();
+
+
+  int i = getlocalip (list);
   if (i > 0)
   {
+	listNode *node;	
       int k;
-      for(k=0; k<i && k < max_if_num; k++)
+      for(k=0; k<list->len ; k++)
       {
-        printf ("本机#%d IP地址是： %s\n", k,ip[k]);
+	node = list->head;
+        printf ("本机#%d IP地址是： %s\n", k, node->value );
+	node = node->next;
       }
   }
   else
     printf (" 无法获取本机IP地址 ");
+
+    showList(list);
 }
