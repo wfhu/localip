@@ -38,7 +38,7 @@ getlocalip (char **outip)
   {
     temp_ip=(char *)malloc(20 * sizeof(char));
     outip[j]=temp_ip;
-    printf("%dth outip is %ld\n", j, outip[j]);
+//    printf("%dth outip is %ld\n", j, outip[j]);
   }
   printf("the number of Interface is %d\n", j);
 
@@ -46,7 +46,7 @@ getlocalip (char **outip)
 //  for (i = (ifconf.ifc_len / sizeof (struct ifreq)); i > 0; i--)
   for (i = 0; i < if_num; i++)
     {
-      printf("number is %d\n", i);
+//      printf("number is %d\n", i);
       ip = inet_ntoa (((struct sockaddr_in *) &(ifreq->ifr_addr))->sin_addr);
 
 /*      if (strcmp (ip, "127.0.0.1") == 0)
@@ -63,6 +63,7 @@ getlocalip (char **outip)
     }
 
 //  return -1;
+//return the number of ip addresses
   return i;
 }
 
