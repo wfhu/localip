@@ -98,8 +98,10 @@ getlocalip (list *list)
 	}
 */
 //      printf("ifreq is %ld, size is %d\n", ifreq, sizeof(ifreq));
-	
-    list = listAddNodeTail(list, ip);
+	char *temp_ip;
+	temp_ip=(char *)malloc(20*sizeof(char));
+	strcpy(temp_ip,ip);
+    list = listAddNodeTail(list, temp_ip);
 	  ifreq++;
       continue;
 //      return 0;
@@ -124,10 +126,10 @@ main ()
   if (i > 0)
   {
 	listNode *node;	
-      int k;
-      for(k=0; k<list->len ; k++)
-      {
 	node = list->head;
+      int k;
+      for(k=0; k<list->len; k++)
+      {
         printf ("本机#%d IP地址是： %s\n", k, node->value );
 	node = node->next;
       }
