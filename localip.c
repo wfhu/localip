@@ -10,59 +10,67 @@
 #include <arpa/inet.h>
 #include <sys/ioctl.h>
 
-typedef struct listNode {
-    struct listNode *next;
-    void *value;
+typedef struct listNode
+{
+  struct listNode *next;
+  void *value;
 } listNode;
 
-typedef struct list {
-    listNode *head;
-    listNode *tail;
-    unsigned int len;
+typedef struct list
+{
+  listNode *head;
+  listNode *tail;
+  unsigned int len;
 } list;
 
-list *listCreate(void)
+list *
+listCreate (void)
 {
-    struct list *list;
+  struct list *list;
 
-    if ((list = malloc(sizeof(*list))) == NULL)
-        return NULL;
-    list->head = list->tail = NULL;
-    list->len = 0;
-    return list;
+  if ((list = malloc (sizeof (*list))) == NULL)
+    return NULL;
+  list->head = list->tail = NULL;
+  list->len = 0;
+  return list;
 }
 
-list *listAddNodeTail(list *list, void *value)
+list *
+listAddNodeTail (list * list, void *value)
 {
-    listNode *node;
+  listNode *node;
 
-    if ((node = malloc(sizeof(*node))) == NULL)
-        return NULL;
-    node->value = value;
-    if (list->len == 0) {
-        list->head = list->tail = node;
-    } else {
-        list->tail->next = node;
-        list->tail = node;
+  if ((node = malloc (sizeof (*node))) == NULL)
+    return NULL;
+  node->value = value;
+  if (list->len == 0)
+    {
+      list->head = list->tail = node;
     }
-    list->len++;
-    return list;
+  else
+    {
+      list->tail->next = node;
+      list->tail = node;
+    }
+  list->len++;
+  return list;
 }
 
-void showList(list *list)
+void
+showList (list * list)
 {
-	listNode *node;
-	node = list->head;
-	int i;
-	for(i=0;i<list->len;i++)
-	{
-		printf("%d th value is %s\n", i, node->value);
-		node=node->next;
-	}
+  listNode *node;
+  node = list->head;
+  int i;
+  for (i = 0; i < list->len; i++)
+    {
+      printf ("%d th value is %s\n", i, node->value);
+      node = node->next;
+    }
 }
 
 int
-getlocalip (list *list)
+getlocalip (list * list)
 {
   int i = 0;
   int sockfd;
@@ -98,18 +106,18 @@ getlocalip (list *list)
 	}
 */
 //      printf("ifreq is %ld, size is %d\n", ifreq, sizeof(ifreq));
-	char *temp_ip;
-	temp_ip=(char *)malloc(20*sizeof(char));
-	strcpy(temp_ip,ip);
-    list = listAddNodeTail(list, temp_ip);
-	  ifreq++;
+      char *temp_ip;
+      temp_ip = (char *) malloc (20 * sizeof (char));
+      strcpy (temp_ip, ip);
+      list = listAddNodeTail (list, temp_ip);
+      ifreq++;
       continue;
 //      return 0;
     }
 
 //  return -1;
 //return the number of ip addresses
-  printf("the number of Interface is %d\n", i);
+  printf ("the number of Interface is %d\n", i);
   return i;
 }
 
@@ -117,25 +125,25 @@ int
 main ()
 {
 
-    struct list *list;
-	
-    list = listCreate();
+  struct list *list;
+
+  list = listCreate ();
 
 
   int i = getlocalip (list);
   if (i > 0)
-  {
-	listNode *node;	
-	node = list->head;
+    {
+      listNode *node;
+      node = list->head;
       int k;
-      for(k=0; k<list->len; k++)
-      {
-        printf ("本机#%d IP地址是： %s\n", k, node->value );
-	node = node->next;
-      }
-  }
+      for (k = 0; k < list->len; k++)
+	{
+	  printf ("本机#%d IP地址是： %s\n", k, node->value);
+	  node = node->next;
+	}
+    }
   else
     printf (" 无法获取本机IP地址 ");
 
-    showList(list);
+  showList (list);
 }
