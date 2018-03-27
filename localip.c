@@ -143,7 +143,7 @@ main ()
 	}
     }
   else
-    printf (" 无法获取本机IP地址 ");
+    printf (" 001 无法获取本机IP地址 ");
 
   showList (list);
 }
