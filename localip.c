@@ -146,4 +146,5 @@ main ()
     printf (" 001 无法获取本机IP地址 ");
 
   showList (list);
+  return 0;
 }
